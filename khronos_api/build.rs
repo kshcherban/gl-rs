@@ -23,15 +23,13 @@ use std::path::*;
 fn main() {
     // Create and open a file in the output directory to contain our generated rust code
     let dest = env::var("OUT_DIR").unwrap();
-    let manifest_path = env::var("CARGO_MANIFEST_DIR").unwrap();
     let mut file = File::create(&Path::new(&dest).join("webgl_exts.rs")).unwrap();
 
     // Find the absolute path to the folder containing the WebGL extensions.
     // The absolute path is needed, because we don't know where the output
     // directory will be, and `include_bytes!(..)` resolves paths relative to the
     // containing file.
-    let root_build = env::current_dir().unwrap();
-    let root = env::current_dir().unwrap().join("api_webgl/extensions");
+    let root = Path::new(&env::var("CARGO_MANIFEST_DIR").unwrap()).join("api_webgl/extensions");
 
     // Generate a slice literal, looking like this:
     // `&[&*include_bytes!(..), &*include_bytes!(..), ..]`
@@ -59,8 +57,7 @@ fn main() {
             let ext_path = path.join("extension.xml");
             if ext_path.is_file() {
                 // Fix absolute path for bazel build
-                let abs_out_path = Path::new(&manifest_path)
-                    .join(ext_path.strip_prefix(root_build.to_str().unwrap()).unwrap());
+                let abs_out_path = ext_path.to_str().unwrap();
                 writeln!(file, "&*include_bytes!({:?}),", abs_out_path).unwrap();
             }
         }
