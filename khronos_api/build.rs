@@ -29,7 +29,8 @@ fn main() {
     // The absolute path is needed, because we don't know where the output
     // directory will be, and `include_bytes!(..)` resolves paths relative to the
     // containing file.
-    let root = Path::new(&env::var("CARGO_MANIFEST_DIR").unwrap()).join("api_webgl/extensions");
+    let root = Path::new(&env::var("CARGO_MANIFEST_DIR").unwrap())
+        .join("khronos_api/api_webgl/extensions");
 
     // Generate a slice literal, looking like this:
     // `&[&*include_bytes!(..), &*include_bytes!(..), ..]`
