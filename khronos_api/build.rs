@@ -62,7 +62,8 @@ fn main() {
             let ext_path = path.join("extension.xml");
             if ext_path.is_file() {
                 // Fix absolute path for bazel build
-                let abs_out_path = ext_path.to_str().unwrap();
+                let abs_out_path = ext_path.canonicalize().unwrap();
+                let abs_out_path = abs_out_path.to_str().unwrap();
                 writeln!(file, "&*include_bytes!({:?}),", abs_out_path).unwrap();
             }
         }
